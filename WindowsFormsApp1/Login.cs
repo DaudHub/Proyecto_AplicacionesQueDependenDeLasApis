@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySqlConnector;
+using Newtonsoft.Json;
 
 namespace WindowsFormsApp1
 {
@@ -31,9 +33,9 @@ namespace WindowsFormsApp1
                 return;
             }
             Hide();
+            new Admin(txtUsuario.Text).Show();
             txtUsuario.Text = null;
             txtContraseña.Text = null;
-            new Admin(txtUsuario.Text).Show();
         }
 
         private void lblIniciar_Click(object sender, EventArgs e)
@@ -43,27 +45,32 @@ namespace WindowsFormsApp1
 
         private async Task<bool> VerifyUser(string username, string password)
         {
-            using (var db_conn = new MySqlConnection("Host=127.0.0.1;User=root;Password=porfavorentrar"))
+            using (var client = new HttpClient())
             {
-                try
+                var bodyContent = new
                 {
-                    await db_conn.OpenAsync();
-                    var command = new MySqlCommand(null, db_conn);
-                    command.CommandText = $@"select usuario, pwd from proyecto.usuario where usuario='{username}' and pwd='{MyEncryption.EncryptToString(password)}' and idrol=1";
-                    var reader = await command.ExecuteReaderAsync();
-                    if (!reader.HasRows) return false;
-                    else return true;
-                }
-                catch (Exception ex)
+                    Username = username,
+                    Password = password,
+                    Name = "",
+                    Surname = "",
+                    Role = "3"
+                };
+                var body = JsonConvert.SerializeObject(bodyContent);
+                StringContent content = new StringContent(body, Encoding.UTF8, "application/json");
+                var response = await client.PostAsync("http://192.168.1.7:5077/api/verify", content);
+                if (!response.IsSuccessStatusCode)
                 {
+                    MessageBox.Show(JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync()).ToString());
                     return false;
                 }
-                finally
-                {
-                    await db_conn.CloseAsync();
-                }
+                var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
+                if (responseBody.success == true)
+                    return true;
+                else return false;
             }
         }
 
     }
+
+
 }
