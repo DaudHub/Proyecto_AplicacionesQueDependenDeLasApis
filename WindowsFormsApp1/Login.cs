@@ -19,6 +19,7 @@ namespace WindowsFormsApp1
 
         public static Login login;
 
+
         public Login()
         {
             InitializeComponent();
@@ -33,7 +34,7 @@ namespace WindowsFormsApp1
                 return;
             }
             Hide();
-            new Admin(txtUsuario.Text).Show();
+            new Admin(txtUsuario.Text, txtContraseña.Text).Show();
             txtUsuario.Text = null;
             txtContraseña.Text = null;
         }
@@ -57,8 +58,8 @@ namespace WindowsFormsApp1
                 };
                 var body = JsonConvert.SerializeObject(bodyContent);
                 StringContent content = new StringContent(body, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync("http://192.168.1.7:5077/api/verify", content);
-                if (!response.IsSuccessStatusCode)
+                var response = await client.PostAsync("http://localhost:5077/api/verify", content);
+                if (((int)response.StatusCode).ToString()[0] != '2')
                 {
                     MessageBox.Show(JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync()).ToString());
                     return false;
