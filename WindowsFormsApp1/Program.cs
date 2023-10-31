@@ -8,7 +8,7 @@ namespace WindowsFormsApp1
 {
     internal static class Program
     {
-        public static string token = string.Empty;
+        public static string Token = string.Empty;
 
         [STAThread]
         static void Main()

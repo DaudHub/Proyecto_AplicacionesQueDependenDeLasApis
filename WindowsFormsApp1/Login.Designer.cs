@@ -162,6 +162,7 @@ namespace WindowsFormsApp1
             this.MaximizeBox = false;
             this.Name = "Login";
             this.Text = "Iniciar sesión";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Login_FormClosed);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.pnlINiciar.ResumeLayout(false);

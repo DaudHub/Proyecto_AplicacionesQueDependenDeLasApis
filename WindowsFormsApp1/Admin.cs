@@ -29,6 +29,7 @@ namespace WindowsFormsApp1
             lblUsuario.Text = username;
             this.username = username;
             this.password = password;
+            
         }
 
         private async void Admin_Load(object sender, EventArgs e)
@@ -38,6 +39,50 @@ namespace WindowsFormsApp1
                 this.Hide();
                 Login.login.Show();
                 this.Dispose();
+            }
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var bodyContent = new
+                    {
+                        User = username,
+                        Password = password,
+                        Token = Program.Token
+                    };
+                    var body = JsonConvert.SerializeObject(bodyContent);
+                    var content = new StringContent(body, Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync("http://localhost:5284/viewbundles", content);
+                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al cargar paquetes: el servidor no responde correctamente");
+                    var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
+                    if (responseBody.success == false) throw new Exception("Error al cargar paquetes: error de autenticación");
+                    Console.WriteLine(responseBody);
+                    foreach (var item in responseBody.bundles)
+                    {
+                        tblLotes.Rows.Add(item.id, item.deposit);
+                    }
+                }
+                string mainUrl = $"https://api.openrouteservice.org/v2/directions/DaudHub/geojson";
+                var destinations = await GetRoute();
+                if (destinations.Count == 0) return;
+                string origin = $"?origin={destinations[0].coordinateX},{destinations[0].coordinateY}";
+                string finalDestination = $"&destination={destinations[destinations.Count - 1].coordinateX},{destinations[destinations.Count - 1].coordinateY}";
+                string stops = "";
+                for (int i = 0; i < destinations.Count; i++)
+                {
+                    if (i == 0) stops += "&waypoints=";
+                    stops += $"{destinations[i].coordinateX},{destinations[i].coordinateY}";
+                    if (destinations.Count - i > 1)
+                    {
+                        stops += "|";
+                    }
+                }
+                string url = mainUrl + origin + stops + finalDestination;
+                string htmlContent = $"<iframe src='{url}' width='100%' height='100%'></iframe>";
+            } 
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
 
@@ -78,7 +123,7 @@ namespace WindowsFormsApp1
                     if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al obtener token: el servidor no responde correctamente");
                     var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
                     if (responseBody.success == false) throw new Exception($"Error al obtener token: {responseBody.message}");
-                    else Program.token = responseBody.token;
+                    else Program.Token = responseBody.token;
                     return true;
                 }
             }
@@ -88,7 +133,33 @@ namespace WindowsFormsApp1
                 return false;
             }
         }
-
         
+        public async Task<List<dynamic>> GetRoute()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var bodyContent = new
+                    {
+                        User = username,
+                        Password = password,
+                        Token = Program.Token
+                    };
+                    var body = JsonConvert.SerializeObject(bodyContent);
+                    var content = new StringContent(body, Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync($"http://localhost:5284/route", content);
+                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al calcular la ruta: el servidor no responde correctamente");
+                    dynamic responseBody = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+                    if (responseBody.success == false) throw new Exception($"Error al obtener token: {responseBody.message}");
+                    return new List<dynamic>(responseBody.route);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return new List<dynamic>();
+            }
+        }
     }
 }
