@@ -59,7 +59,7 @@ namespace WindowsFormsApp1
                     Console.WriteLine(responseBody);
                     foreach (var item in responseBody.bundles)
                     {
-                        tblLotes.Rows.Add(item.id, item.deposit);
+                        tblLotes.Rows.Add(item.id, item.deposit, item.street, item.number);
                     }
                 }
                 string mainUrl = $"https://api.openrouteservice.org/v2/directions/DaudHub/geojson";
