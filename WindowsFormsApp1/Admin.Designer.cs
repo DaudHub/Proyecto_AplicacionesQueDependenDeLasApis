@@ -32,15 +32,17 @@
             this.pcbxLogo = new System.Windows.Forms.PictureBox();
             this.pnlBackground = new System.Windows.Forms.Panel();
             this.tblLotes = new System.Windows.Forms.DataGridView();
+            this.clmLote = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmDestino = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmNumero = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblUsuario = new System.Windows.Forms.Label();
             this.pnlCerrarSesion = new System.Windows.Forms.Panel();
             this.lblCerrarSesion = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.clmLote = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clmDestino = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clmCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clmNumero = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblLote = new System.Windows.Forms.Label();
+            this.cbxLote = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pcbxLogo)).BeginInit();
             this.pnlBackground.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tblLotes)).BeginInit();
@@ -60,6 +62,8 @@
             // 
             // pnlBackground
             // 
+            this.pnlBackground.Controls.Add(this.cbxLote);
+            this.pnlBackground.Controls.Add(this.lblLote);
             this.pnlBackground.Controls.Add(this.tblLotes);
             this.pnlBackground.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlBackground.Location = new System.Drawing.Point(0, 35);
@@ -82,6 +86,34 @@
             this.tblLotes.Name = "tblLotes";
             this.tblLotes.Size = new System.Drawing.Size(319, 388);
             this.tblLotes.TabIndex = 38;
+            // 
+            // clmLote
+            // 
+            this.clmLote.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.clmLote.HeaderText = "Lote";
+            this.clmLote.Name = "clmLote";
+            this.clmLote.ReadOnly = true;
+            // 
+            // clmDestino
+            // 
+            this.clmDestino.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.clmDestino.HeaderText = "Destino";
+            this.clmDestino.Name = "clmDestino";
+            this.clmDestino.ReadOnly = true;
+            // 
+            // clmCalle
+            // 
+            this.clmCalle.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.clmCalle.HeaderText = "Calle";
+            this.clmCalle.Name = "clmCalle";
+            this.clmCalle.ReadOnly = true;
+            // 
+            // clmNumero
+            // 
+            this.clmNumero.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.clmNumero.HeaderText = "Numero";
+            this.clmNumero.Name = "clmNumero";
+            this.clmNumero.ReadOnly = true;
             // 
             // panel1
             // 
@@ -140,33 +172,24 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Camiones";
             // 
-            // clmLote
+            // lblLote
             // 
-            this.clmLote.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.clmLote.HeaderText = "Lote";
-            this.clmLote.Name = "clmLote";
-            this.clmLote.ReadOnly = true;
+            this.lblLote.AutoSize = true;
+            this.lblLote.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLote.Location = new System.Drawing.Point(370, 30);
+            this.lblLote.Name = "lblLote";
+            this.lblLote.Size = new System.Drawing.Size(60, 25);
+            this.lblLote.TabIndex = 39;
+            this.lblLote.Text = "Lote:";
             // 
-            // clmDestino
+            // cbxLote
             // 
-            this.clmDestino.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.clmDestino.HeaderText = "Destino";
-            this.clmDestino.Name = "clmDestino";
-            this.clmDestino.ReadOnly = true;
-            // 
-            // clmCalle
-            // 
-            this.clmCalle.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.clmCalle.HeaderText = "Calle";
-            this.clmCalle.Name = "clmCalle";
-            this.clmCalle.ReadOnly = true;
-            // 
-            // clmNumero
-            // 
-            this.clmNumero.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.clmNumero.HeaderText = "Numero";
-            this.clmNumero.Name = "clmNumero";
-            this.clmNumero.ReadOnly = true;
+            this.cbxLote.FormattingEnabled = true;
+            this.cbxLote.Location = new System.Drawing.Point(436, 34);
+            this.cbxLote.Name = "cbxLote";
+            this.cbxLote.Size = new System.Drawing.Size(121, 21);
+            this.cbxLote.TabIndex = 40;
+            this.cbxLote.DropDown += new System.EventHandler(this.cbxLote_DropDown);
             // 
             // Admin
             // 
@@ -183,6 +206,7 @@
             this.Load += new System.EventHandler(this.Admin_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pcbxLogo)).EndInit();
             this.pnlBackground.ResumeLayout(false);
+            this.pnlBackground.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tblLotes)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -205,5 +229,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn clmDestino;
         private System.Windows.Forms.DataGridViewTextBoxColumn clmCalle;
         private System.Windows.Forms.DataGridViewTextBoxColumn clmNumero;
+        private System.Windows.Forms.ComboBox cbxLote;
+        private System.Windows.Forms.Label lblLote;
     }
 }

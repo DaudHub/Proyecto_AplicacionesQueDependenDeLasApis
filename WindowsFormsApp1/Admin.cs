@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MySqlConnector.Authentication;
+using Newtonsoft.Json;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -160,6 +161,38 @@ namespace WindowsFormsApp1
                 MessageBox.Show(ex.ToString());
                 return new List<dynamic>();
             }
+        }
+
+        private async void cbxLote_DropDown(object sender, EventArgs e)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var bodyContent = new
+                    {
+                        User = username,
+                        Password = password,
+                        Token = Program.Token
+                    };
+                    var body = JsonConvert.SerializeObject(bodyContent);
+                    var content = new StringContent(body, Encoding.UTF8, "application/json");
+                    dynamic response = await client.PostAsync("http://localhost:5284/viewbundles", content);
+                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al calcular la ruta: el servidor no responde correctamente");
+                    dynamic responseBody = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+                    if (responseBody.success == false) throw new Exception("Error al obtener paquetes");
+                    cbxLote.Items.Clear();
+                    foreach (var item in responseBody.bundles)
+                    {
+                        cbxLote.Items.Add(item.id.ToString());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
         }
     }
 }
