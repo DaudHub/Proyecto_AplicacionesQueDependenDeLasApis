@@ -31,6 +31,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Admin));
             this.pcbxLogo = new System.Windows.Forms.PictureBox();
             this.pnlBackground = new System.Windows.Forms.Panel();
+            this.pnlConfirmar = new System.Windows.Forms.Panel();
+            this.lblConfirmar = new System.Windows.Forms.Label();
+            this.cbxLote = new System.Windows.Forms.ComboBox();
+            this.lblLote = new System.Windows.Forms.Label();
             this.tblLotes = new System.Windows.Forms.DataGridView();
             this.clmLote = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmDestino = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -41,10 +45,9 @@
             this.pnlCerrarSesion = new System.Windows.Forms.Panel();
             this.lblCerrarSesion = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.lblLote = new System.Windows.Forms.Label();
-            this.cbxLote = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pcbxLogo)).BeginInit();
             this.pnlBackground.SuspendLayout();
+            this.pnlConfirmar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tblLotes)).BeginInit();
             this.panel1.SuspendLayout();
             this.pnlCerrarSesion.SuspendLayout();
@@ -62,6 +65,7 @@
             // 
             // pnlBackground
             // 
+            this.pnlBackground.Controls.Add(this.pnlConfirmar);
             this.pnlBackground.Controls.Add(this.cbxLote);
             this.pnlBackground.Controls.Add(this.lblLote);
             this.pnlBackground.Controls.Add(this.tblLotes);
@@ -70,6 +74,47 @@
             this.pnlBackground.Name = "pnlBackground";
             this.pnlBackground.Size = new System.Drawing.Size(800, 415);
             this.pnlBackground.TabIndex = 2;
+            // 
+            // pnlConfirmar
+            // 
+            this.pnlConfirmar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(133)))), ((int)(((byte)(185)))));
+            this.pnlConfirmar.Controls.Add(this.lblConfirmar);
+            this.pnlConfirmar.Location = new System.Drawing.Point(417, 68);
+            this.pnlConfirmar.Name = "pnlConfirmar";
+            this.pnlConfirmar.Size = new System.Drawing.Size(105, 27);
+            this.pnlConfirmar.TabIndex = 6;
+            this.pnlConfirmar.Click += new System.EventHandler(this.pnlConfirmar_Click);
+            // 
+            // lblConfirmar
+            // 
+            this.lblConfirmar.AutoSize = true;
+            this.lblConfirmar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblConfirmar.ForeColor = System.Drawing.Color.White;
+            this.lblConfirmar.Location = new System.Drawing.Point(8, 7);
+            this.lblConfirmar.Name = "lblConfirmar";
+            this.lblConfirmar.Size = new System.Drawing.Size(90, 13);
+            this.lblConfirmar.TabIndex = 0;
+            this.lblConfirmar.Text = "Confirmar entrega";
+            this.lblConfirmar.Click += new System.EventHandler(this.lblConfirmar_Click);
+            // 
+            // cbxLote
+            // 
+            this.cbxLote.FormattingEnabled = true;
+            this.cbxLote.Location = new System.Drawing.Point(436, 34);
+            this.cbxLote.Name = "cbxLote";
+            this.cbxLote.Size = new System.Drawing.Size(121, 21);
+            this.cbxLote.TabIndex = 40;
+            this.cbxLote.DropDown += new System.EventHandler(this.cbxLote_DropDown);
+            // 
+            // lblLote
+            // 
+            this.lblLote.AutoSize = true;
+            this.lblLote.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLote.Location = new System.Drawing.Point(370, 30);
+            this.lblLote.Name = "lblLote";
+            this.lblLote.Size = new System.Drawing.Size(60, 25);
+            this.lblLote.TabIndex = 39;
+            this.lblLote.Text = "Lote:";
             // 
             // tblLotes
             // 
@@ -172,25 +217,6 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Camiones";
             // 
-            // lblLote
-            // 
-            this.lblLote.AutoSize = true;
-            this.lblLote.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLote.Location = new System.Drawing.Point(370, 30);
-            this.lblLote.Name = "lblLote";
-            this.lblLote.Size = new System.Drawing.Size(60, 25);
-            this.lblLote.TabIndex = 39;
-            this.lblLote.Text = "Lote:";
-            // 
-            // cbxLote
-            // 
-            this.cbxLote.FormattingEnabled = true;
-            this.cbxLote.Location = new System.Drawing.Point(436, 34);
-            this.cbxLote.Name = "cbxLote";
-            this.cbxLote.Size = new System.Drawing.Size(121, 21);
-            this.cbxLote.TabIndex = 40;
-            this.cbxLote.DropDown += new System.EventHandler(this.cbxLote_DropDown);
-            // 
             // Admin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -207,6 +233,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pcbxLogo)).EndInit();
             this.pnlBackground.ResumeLayout(false);
             this.pnlBackground.PerformLayout();
+            this.pnlConfirmar.ResumeLayout(false);
+            this.pnlConfirmar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tblLotes)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -231,5 +259,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn clmNumero;
         private System.Windows.Forms.ComboBox cbxLote;
         private System.Windows.Forms.Label lblLote;
+        private System.Windows.Forms.Panel pnlConfirmar;
+        private System.Windows.Forms.Label lblConfirmar;
     }
 }

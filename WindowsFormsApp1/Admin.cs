@@ -43,26 +43,7 @@ namespace WindowsFormsApp1
             }
             try
             {
-                using (var client = new HttpClient())
-                {
-                    var bodyContent = new
-                    {
-                        User = username,
-                        Password = password,
-                        Token = Program.Token
-                    };
-                    var body = JsonConvert.SerializeObject(bodyContent);
-                    var content = new StringContent(body, Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync("http://localhost:5284/viewbundles", content);
-                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al cargar paquetes: el servidor no responde correctamente");
-                    var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
-                    if (responseBody.success == false) throw new Exception("Error al cargar paquetes: error de autenticación");
-                    Console.WriteLine(responseBody);
-                    foreach (var item in responseBody.bundles)
-                    {
-                        tblLotes.Rows.Add(item.id, item.deposit, item.street, item.number);
-                    }
-                }
+                UpdateTable();
                 string mainUrl = $"https://api.openrouteservice.org/v2/directions/DaudHub/geojson";
                 var destinations = await GetRoute();
                 if (destinations.Count == 0) return;
@@ -135,7 +116,7 @@ namespace WindowsFormsApp1
             }
         }
         
-        public async Task<List<dynamic>> GetRoute()
+        private async Task<List<dynamic>> GetRoute()
         {
             try
             {
@@ -152,7 +133,7 @@ namespace WindowsFormsApp1
                     var response = await client.PostAsync($"http://localhost:5284/route", content);
                     if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al calcular la ruta: el servidor no responde correctamente");
                     dynamic responseBody = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
-                    if (responseBody.success == false) throw new Exception($"Error al obtener token: {responseBody.message}");
+                    if (responseBody.success == false) throw new Exception($"Error al obtener la ruta: {responseBody.message}");
                     return new List<dynamic>(responseBody.route);
                 }
             }
@@ -178,7 +159,7 @@ namespace WindowsFormsApp1
                     var body = JsonConvert.SerializeObject(bodyContent);
                     var content = new StringContent(body, Encoding.UTF8, "application/json");
                     dynamic response = await client.PostAsync("http://localhost:5284/viewbundles", content);
-                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al calcular la ruta: el servidor no responde correctamente");
+                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al obtener paquetes: el servidor no responde correctamente");
                     dynamic responseBody = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
                     if (responseBody.success == false) throw new Exception("Error al obtener paquetes");
                     cbxLote.Items.Clear();
@@ -193,6 +174,73 @@ namespace WindowsFormsApp1
                 MessageBox.Show(ex.ToString());
             }
 
+        }
+
+        private async void pnlConfirmar_Click(object sender, EventArgs e)
+        {
+            try {
+                using (var client = new HttpClient())
+                {
+                    var bodyContent = new
+                    {
+                        Credentials = new
+                        {
+                            User = username,
+                            Password = password,
+                            Token = Program.Token
+                        },
+                        Element = int.Parse(cbxLote.SelectedItem.ToString())
+                    };
+                    var body = JsonConvert.SerializeObject(bodyContent);
+                    var content = new StringContent(body, Encoding.UTF8, "application/json");
+                    dynamic response = await client.PostAsync("http://localhost:5284/confirm", content);
+                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("error al confirmar la entrega: el servidor no responde correctamente");
+                    dynamic responseBody = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+                    if (responseBody.success == false) throw new Exception($"Error al confirmar la entrega: {responseBody.message}{responseBody.exception}");
+                    UpdateTable();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void lblConfirmar_Click(object sender, EventArgs e)
+        {
+            pnlConfirmar_Click(pnlConfirmar, e);
+        }
+
+        private async void UpdateTable()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var bodyContent = new
+                    {
+                        User = username,
+                        Password = password,
+                        Token = Program.Token
+                    };
+                    var body = JsonConvert.SerializeObject(bodyContent);
+                    var content = new StringContent(body, Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync("http://localhost:5284/viewbundles", content);
+                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al cargar paquetes: el servidor no responde correctamente");
+                    var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
+                    if (responseBody.success == false) throw new Exception("Error al cargar paquetes: error de autenticación");
+                    Console.WriteLine(responseBody);
+                    tblLotes.Rows.Clear();
+                    foreach (var item in responseBody.bundles)
+                    {
+                        tblLotes.Rows.Add(item.id, item.deposit, item.street, item.number);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     }
 }
