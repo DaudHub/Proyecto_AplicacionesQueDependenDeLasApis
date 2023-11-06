@@ -32,6 +32,7 @@ namespace WindowsFormsApp1
             this.username = username;
             this.password = password;
             webMapa.ScriptErrorsSuppressed = true;
+            webMapa.ScrollBarsEnabled = false;
         }
 
         private async void Admin_Load(object sender, EventArgs e)
@@ -44,10 +45,7 @@ namespace WindowsFormsApp1
             }
             try
             {
-                UpdateTable();
-                string map = await LoadMap(new float[][] { }, (float) 34.904170, (float) 56.126173);
-                if (map != null) webMapa.DocumentText = map;
-                else MessageBox.Show("error al cargar el mapa");
+                UpdateElements();
             } 
             catch (Exception ex)
             {
@@ -184,7 +182,7 @@ namespace WindowsFormsApp1
                     if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("error al confirmar la entrega: el servidor no responde correctamente");
                     dynamic responseBody = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
                     if (responseBody.success == false) throw new Exception($"Error al confirmar la entrega: {responseBody.message}{responseBody.exception}");
-                    UpdateTable();
+                    UpdateElements();
                 }
             }
             catch (Exception ex)
@@ -198,7 +196,7 @@ namespace WindowsFormsApp1
             pnlConfirmar_Click(pnlConfirmar, e);
         }
 
-        private async void UpdateTable()
+        private async void UpdateElements()
         {
             try
             {
@@ -213,14 +211,18 @@ namespace WindowsFormsApp1
                     var body = JsonConvert.SerializeObject(bodyContent);
                     var content = new StringContent(body, Encoding.UTF8, "application/json");
                     var response = await client.PostAsync("http://localhost:5284/viewbundles", content);
-                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al cargar paquetes: el servidor no responde correctamente");
+                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al cargar lotes: el servidor no responde correctamente");
                     var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
-                    if (responseBody.success == false) throw new Exception("Error al cargar paquetes: error de autenticación");
+                    if (responseBody.success == false) throw new Exception("Error al cargar lotes: error de autenticación");
                     tblLotes.Rows.Clear();
                     foreach (var item in responseBody.bundles)
                     {
                         tblLotes.Rows.Add(item.id, item.deposit, item.street, item.number);
                     }
+                    var route = await GetRoute();
+                    string url = GetMapUrl(route);
+                    Console.WriteLine(url);
+                    webMapa.Navigate(url);
                 }
             }
             catch (Exception ex)
@@ -229,25 +231,38 @@ namespace WindowsFormsApp1
             }
         }
 
-        private async Task<string> LoadMap(float[][] coordinates, float x, float y)
+        private string GetMapUrl(List<dynamic> coordinates)
         {
-            using (var client = new HttpClient())
+            try
             {
-                try
+                string url = string.Empty;
+                if (coordinates.Count < 1) return url;
+                if (coordinates.Count == 1)
                 {
-                    var request = new HttpRequestMessage(HttpMethod.Post, $"http://localhost:5284/map?x={x}&y={y}");
-                    var requestBody = JsonConvert.SerializeObject(coordinates);
-                    request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                    var response = await client.SendAsync(request);
-                    Console.WriteLine(await response.Content.ReadAsStringAsync());
-                    return await response.Content.ReadAsStringAsync();
+                    url = $"https://dev.virtualearth.net/REST/v1/Imagery/Map/Road/{coordinates[0].coordinateX},{coordinates[0].coordinateY}/16?&pushpin={coordinates[0].coordinateX},{coordinates[0].coordinateY}&key=AjVIkFx1Wg4hG7mYImVk4euyiXWwBkDGSj1yUTi6_Oq-eTC_03IxeWatzN8wItJ4&";
+                    return url;
                 }
-                catch (Exception ex)
+                url = "https://dev.virtualearth.net/REST/v1/Imagery/Map/Road/Routes/Driving?";
+                for (int i = 0; i < coordinates.Count; i++)
                 {
-                    MessageBox.Show(ex.ToString());
-                    return null;
+                    url += $"waypoint.{i + 1}={coordinates[i].coordinateX},{coordinates[i].coordinateY}&";
                 }
+                url += "key=AjVIkFx1Wg4hG7mYImVk4euyiXWwBkDGSj1yUTi6_Oq-eTC_03IxeWatzN8wItJ4";
+                return url;
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return string.Empty;
+            }
+        }
+
+        private void webMapa_Navigated(object sender, WebBrowserNavigatedEventArgs e)
+        {
+            HtmlElement body = webMapa.Document.GetElementsByTagName("body")[0];
+            body.Style = "padding: 0; margin: 0;";
+            HtmlElementCollection images = webMapa.Document.Body.GetElementsByTagName("img");
+            foreach (HtmlElement img in images) img.Style = "margin: 0px !important;";
         }
     }
 }

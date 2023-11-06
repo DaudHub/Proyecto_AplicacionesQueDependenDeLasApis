@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Admin));
             this.pcbxLogo = new System.Windows.Forms.PictureBox();
             this.pnlBackground = new System.Windows.Forms.Panel();
+            this.webMapa = new System.Windows.Forms.WebBrowser();
             this.pnlConfirmar = new System.Windows.Forms.Panel();
             this.lblConfirmar = new System.Windows.Forms.Label();
             this.cbxLote = new System.Windows.Forms.ComboBox();
@@ -45,7 +46,6 @@
             this.pnlCerrarSesion = new System.Windows.Forms.Panel();
             this.lblCerrarSesion = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.webMapa = new System.Windows.Forms.WebBrowser();
             ((System.ComponentModel.ISupportInitialize)(this.pcbxLogo)).BeginInit();
             this.pnlBackground.SuspendLayout();
             this.pnlConfirmar.SuspendLayout();
@@ -77,11 +77,20 @@
             this.pnlBackground.Size = new System.Drawing.Size(800, 415);
             this.pnlBackground.TabIndex = 2;
             // 
+            // webMapa
+            // 
+            this.webMapa.Location = new System.Drawing.Point(391, 53);
+            this.webMapa.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webMapa.Name = "webMapa";
+            this.webMapa.Size = new System.Drawing.Size(350, 350);
+            this.webMapa.TabIndex = 41;
+            this.webMapa.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.webMapa_Navigated);
+            // 
             // pnlConfirmar
             // 
             this.pnlConfirmar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(133)))), ((int)(((byte)(185)))));
             this.pnlConfirmar.Controls.Add(this.lblConfirmar);
-            this.pnlConfirmar.Location = new System.Drawing.Point(417, 68);
+            this.pnlConfirmar.Location = new System.Drawing.Point(611, 13);
             this.pnlConfirmar.Name = "pnlConfirmar";
             this.pnlConfirmar.Size = new System.Drawing.Size(105, 27);
             this.pnlConfirmar.TabIndex = 6;
@@ -102,7 +111,7 @@
             // cbxLote
             // 
             this.cbxLote.FormattingEnabled = true;
-            this.cbxLote.Location = new System.Drawing.Point(436, 34);
+            this.cbxLote.Location = new System.Drawing.Point(475, 17);
             this.cbxLote.Name = "cbxLote";
             this.cbxLote.Size = new System.Drawing.Size(121, 21);
             this.cbxLote.TabIndex = 40;
@@ -112,7 +121,7 @@
             // 
             this.lblLote.AutoSize = true;
             this.lblLote.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLote.Location = new System.Drawing.Point(370, 30);
+            this.lblLote.Location = new System.Drawing.Point(409, 13);
             this.lblLote.Name = "lblLote";
             this.lblLote.Size = new System.Drawing.Size(60, 25);
             this.lblLote.TabIndex = 39;
@@ -218,14 +227,6 @@
             this.label1.Size = new System.Drawing.Size(103, 27);
             this.label1.TabIndex = 0;
             this.label1.Text = "Camiones";
-            // 
-            // webMapa
-            // 
-            this.webMapa.Location = new System.Drawing.Point(355, 114);
-            this.webMapa.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webMapa.Name = "webMapa";
-            this.webMapa.Size = new System.Drawing.Size(424, 289);
-            this.webMapa.TabIndex = 41;
             // 
             // Admin
             // 
