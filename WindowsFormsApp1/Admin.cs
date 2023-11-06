@@ -14,6 +14,7 @@ using System.Runtime.Remoting;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp1
@@ -30,7 +31,7 @@ namespace WindowsFormsApp1
             lblUsuario.Text = username;
             this.username = username;
             this.password = password;
-            
+            webMapa.ScriptErrorsSuppressed = true;
         }
 
         private async void Admin_Load(object sender, EventArgs e)
@@ -44,23 +45,9 @@ namespace WindowsFormsApp1
             try
             {
                 UpdateTable();
-                string mainUrl = $"https://api.openrouteservice.org/v2/directions/DaudHub/geojson";
-                var destinations = await GetRoute();
-                if (destinations.Count == 0) return;
-                string origin = $"?origin={destinations[0].coordinateX},{destinations[0].coordinateY}";
-                string finalDestination = $"&destination={destinations[destinations.Count - 1].coordinateX},{destinations[destinations.Count - 1].coordinateY}";
-                string stops = "";
-                for (int i = 0; i < destinations.Count; i++)
-                {
-                    if (i == 0) stops += "&waypoints=";
-                    stops += $"{destinations[i].coordinateX},{destinations[i].coordinateY}";
-                    if (destinations.Count - i > 1)
-                    {
-                        stops += "|";
-                    }
-                }
-                string url = mainUrl + origin + stops + finalDestination;
-                string htmlContent = $"<iframe src='{url}' width='100%' height='100%'></iframe>";
+                string map = await LoadMap(new float[][] { }, (float) 34.904170, (float) 56.126173);
+                if (map != null) webMapa.DocumentText = map;
+                else MessageBox.Show("error al cargar el mapa");
             } 
             catch (Exception ex)
             {
@@ -229,7 +216,6 @@ namespace WindowsFormsApp1
                     if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al cargar paquetes: el servidor no responde correctamente");
                     var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
                     if (responseBody.success == false) throw new Exception("Error al cargar paquetes: error de autenticación");
-                    Console.WriteLine(responseBody);
                     tblLotes.Rows.Clear();
                     foreach (var item in responseBody.bundles)
                     {
@@ -240,6 +226,27 @@ namespace WindowsFormsApp1
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private async Task<string> LoadMap(float[][] coordinates, float x, float y)
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var request = new HttpRequestMessage(HttpMethod.Post, $"http://localhost:5284/map?x={x}&y={y}");
+                    var requestBody = JsonConvert.SerializeObject(coordinates);
+                    request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+                    var response = await client.SendAsync(request);
+                    Console.WriteLine(await response.Content.ReadAsStringAsync());
+                    return await response.Content.ReadAsStringAsync();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                    return null;
+                }
             }
         }
     }

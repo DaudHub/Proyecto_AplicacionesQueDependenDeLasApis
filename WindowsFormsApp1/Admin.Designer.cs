@@ -45,6 +45,7 @@
             this.pnlCerrarSesion = new System.Windows.Forms.Panel();
             this.lblCerrarSesion = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.webMapa = new System.Windows.Forms.WebBrowser();
             ((System.ComponentModel.ISupportInitialize)(this.pcbxLogo)).BeginInit();
             this.pnlBackground.SuspendLayout();
             this.pnlConfirmar.SuspendLayout();
@@ -65,6 +66,7 @@
             // 
             // pnlBackground
             // 
+            this.pnlBackground.Controls.Add(this.webMapa);
             this.pnlBackground.Controls.Add(this.pnlConfirmar);
             this.pnlBackground.Controls.Add(this.cbxLote);
             this.pnlBackground.Controls.Add(this.lblLote);
@@ -217,6 +219,14 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Camiones";
             // 
+            // webMapa
+            // 
+            this.webMapa.Location = new System.Drawing.Point(355, 114);
+            this.webMapa.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webMapa.Name = "webMapa";
+            this.webMapa.Size = new System.Drawing.Size(424, 289);
+            this.webMapa.TabIndex = 41;
+            // 
             // Admin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -261,5 +271,6 @@
         private System.Windows.Forms.Label lblLote;
         private System.Windows.Forms.Panel pnlConfirmar;
         private System.Windows.Forms.Label lblConfirmar;
+        private System.Windows.Forms.WebBrowser webMapa;
     }
 }

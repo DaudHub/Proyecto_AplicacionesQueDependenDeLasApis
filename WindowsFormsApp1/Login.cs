@@ -46,28 +46,35 @@ namespace WindowsFormsApp1
 
         private async Task<bool> VerifyUser(string username, string password)
         {
-            using (var client = new HttpClient())
+            try
             {
-                var bodyContent = new
+                using (var client = new HttpClient())
                 {
-                    Username = username,
-                    Password = password,
-                    Name = "",
-                    Surname = "",
-                    Role = "3"
-                };
-                var body = JsonConvert.SerializeObject(bodyContent);
-                StringContent content = new StringContent(body, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync("http://localhost:5077/api/verify", content);
-                if (((int)response.StatusCode).ToString()[0] != '2')
-                {
-                    MessageBox.Show(JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync()).ToString());
-                    return false;
+                    var bodyContent = new
+                    {
+                        Username = username,
+                        Password = password,
+                        Name = "",
+                        Surname = "",
+                        Role = "3"
+                    };
+                    var body = JsonConvert.SerializeObject(bodyContent);
+                    StringContent content = new StringContent(body, Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync("http://localhost:5077/api/verify", content);
+                    if (((int)response.StatusCode).ToString()[0] != '2')
+                    {
+                        MessageBox.Show(JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync()).ToString());
+                        return false;
+                    }
+                    var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
+                    if (responseBody.success == true)
+                        return true;
+                    else return false;
                 }
-                var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
-                if (responseBody.success == true)
-                    return true;
-                else return false;
+            }
+            catch (Exception ex)
+            {
+               return false;
             }
         }
 
