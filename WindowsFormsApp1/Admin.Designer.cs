@@ -32,9 +32,9 @@
             this.SidePanel = new System.Windows.Forms.Panel();
             this.pnlLotes = new System.Windows.Forms.Panel();
             this.lblLotes = new System.Windows.Forms.Label();
-            this.pnlAsignar = new System.Windows.Forms.Panel();
+            this.pnlEnviar = new System.Windows.Forms.Panel();
             this.lblEnviar = new System.Windows.Forms.Label();
-            this.pnlCamiones = new System.Windows.Forms.Panel();
+            this.pnlCargar = new System.Windows.Forms.Panel();
             this.lblCargar = new System.Windows.Forms.Label();
             this.pnlPaquetes = new System.Windows.Forms.Panel();
             this.lblPaquetes = new System.Windows.Forms.Label();
@@ -47,8 +47,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.SidePanel.SuspendLayout();
             this.pnlLotes.SuspendLayout();
-            this.pnlAsignar.SuspendLayout();
-            this.pnlCamiones.SuspendLayout();
+            this.pnlEnviar.SuspendLayout();
+            this.pnlCargar.SuspendLayout();
             this.pnlPaquetes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pcbxLogo)).BeginInit();
             this.pnlSesion.SuspendLayout();
@@ -60,8 +60,8 @@
             // 
             this.SidePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(67)))), ((int)(((byte)(96)))));
             this.SidePanel.Controls.Add(this.pnlLotes);
-            this.SidePanel.Controls.Add(this.pnlAsignar);
-            this.SidePanel.Controls.Add(this.pnlCamiones);
+            this.SidePanel.Controls.Add(this.pnlEnviar);
+            this.SidePanel.Controls.Add(this.pnlCargar);
             this.SidePanel.Controls.Add(this.pnlPaquetes);
             this.SidePanel.Controls.Add(this.pcbxLogo);
             this.SidePanel.Controls.Add(this.pnlSesion);
@@ -93,15 +93,15 @@
             this.lblLotes.Text = "Lotes";
             this.lblLotes.Click += new System.EventHandler(this.SidePanelButtonLabelClicked);
             // 
-            // pnlAsignar
+            // pnlEnviar
             // 
-            this.pnlAsignar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(133)))), ((int)(((byte)(185)))));
-            this.pnlAsignar.Controls.Add(this.lblEnviar);
-            this.pnlAsignar.Location = new System.Drawing.Point(14, 282);
-            this.pnlAsignar.Name = "pnlAsignar";
-            this.pnlAsignar.Size = new System.Drawing.Size(159, 34);
-            this.pnlAsignar.TabIndex = 3;
-            this.pnlAsignar.Click += new System.EventHandler(this.SidePanelButtonClicked);
+            this.pnlEnviar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(133)))), ((int)(((byte)(185)))));
+            this.pnlEnviar.Controls.Add(this.lblEnviar);
+            this.pnlEnviar.Location = new System.Drawing.Point(14, 282);
+            this.pnlEnviar.Name = "pnlEnviar";
+            this.pnlEnviar.Size = new System.Drawing.Size(159, 34);
+            this.pnlEnviar.TabIndex = 3;
+            this.pnlEnviar.Click += new System.EventHandler(this.SidePanelButtonClicked);
             // 
             // lblEnviar
             // 
@@ -115,15 +115,15 @@
             this.lblEnviar.Text = "Enviar";
             this.lblEnviar.Click += new System.EventHandler(this.SidePanelButtonLabelClicked);
             // 
-            // pnlCamiones
+            // pnlCargar
             // 
-            this.pnlCamiones.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(133)))), ((int)(((byte)(185)))));
-            this.pnlCamiones.Controls.Add(this.lblCargar);
-            this.pnlCamiones.Location = new System.Drawing.Point(14, 234);
-            this.pnlCamiones.Name = "pnlCamiones";
-            this.pnlCamiones.Size = new System.Drawing.Size(159, 34);
-            this.pnlCamiones.TabIndex = 2;
-            this.pnlCamiones.Click += new System.EventHandler(this.SidePanelButtonClicked);
+            this.pnlCargar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(133)))), ((int)(((byte)(185)))));
+            this.pnlCargar.Controls.Add(this.lblCargar);
+            this.pnlCargar.Location = new System.Drawing.Point(14, 234);
+            this.pnlCargar.Name = "pnlCargar";
+            this.pnlCargar.Size = new System.Drawing.Size(159, 34);
+            this.pnlCargar.TabIndex = 2;
+            this.pnlCargar.Click += new System.EventHandler(this.SidePanelButtonClicked);
             // 
             // lblCargar
             // 
@@ -241,13 +241,14 @@
             this.Name = "Admin";
             this.Text = "Admin";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Admin_FormClosed);
+            this.Load += new System.EventHandler(this.Admin_Load);
             this.SidePanel.ResumeLayout(false);
             this.pnlLotes.ResumeLayout(false);
             this.pnlLotes.PerformLayout();
-            this.pnlAsignar.ResumeLayout(false);
-            this.pnlAsignar.PerformLayout();
-            this.pnlCamiones.ResumeLayout(false);
-            this.pnlCamiones.PerformLayout();
+            this.pnlEnviar.ResumeLayout(false);
+            this.pnlEnviar.PerformLayout();
+            this.pnlCargar.ResumeLayout(false);
+            this.pnlCargar.PerformLayout();
             this.pnlPaquetes.ResumeLayout(false);
             this.pnlPaquetes.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pcbxLogo)).EndInit();
@@ -268,15 +269,15 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel pnlPaquetes;
-        private System.Windows.Forms.Panel pnlAsignar;
-        private System.Windows.Forms.Panel pnlCamiones;
+        private System.Windows.Forms.Panel pnlEnviar;
+        private System.Windows.Forms.Panel pnlCargar;
         private System.Windows.Forms.Label lblLotes;
         private System.Windows.Forms.Label lblPaquetes;
-        private System.Windows.Forms.Label lblEnviar;
         private System.Windows.Forms.Panel pnlLotes;
         private System.Windows.Forms.Label lblCargar;
         private System.Windows.Forms.Label lblCerrarSesion;
         private System.Windows.Forms.Panel pnlCerrarSesion;
         private System.Windows.Forms.Panel pnlSesion;
+        private System.Windows.Forms.Label lblEnviar;
     }
 }

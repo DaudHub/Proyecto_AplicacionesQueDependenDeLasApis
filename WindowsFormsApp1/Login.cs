@@ -33,9 +33,9 @@ namespace WindowsFormsApp1
                 return;
             }
             Hide();
+            new Admin(txtUsuario.Text, txtContraseña.Text).Show();
             txtUsuario.Text = null;
             txtContraseña.Text = null;
-            new Admin(txtUsuario.Text).Show();
         }
 
         private void lblIniciar_Click(object sender, EventArgs e)

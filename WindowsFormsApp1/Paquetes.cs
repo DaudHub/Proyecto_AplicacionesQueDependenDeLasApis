@@ -4,228 +4,106 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
-using MySqlConnector;
+using Newtonsoft.Json;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace WindowsFormsApp1
 {
     public partial class Paquetes : UserControl
     {
 
-        Dictionary<string, byte> roles = new Dictionary<string, byte>()
-        {
-            {"administrador", 1},
-            {"almacenero", 2},
-            {"camionero", 3},
-            {"cliente", 4}
-        };
+        string username;
+        string password;
 
-        Dictionary<string, string> atributosUsuario = new Dictionary<string, string>()
-        {
-            {"usuario", "usuario"},
-            {"contraseña", "pwd"},
-            {"rol", "idrol"},
-            {"nombre", "nombre"},
-            {"apellido", "apellido"}
-        };
-
-        public Paquetes()
+        public Paquetes(string username, string password)
         {
             InitializeComponent();
+            this.username = username;
+            this.password = password;
+        }
+
+        private void Paquetes_Load(object sender, EventArgs e)
+        {
             UpdateTable();
-        }
-
-        private async void pnlCrearUsuario_Click(object sender, EventArgs e)
-        {
-            using (var db_conn = new MySqlConnection("Host=127.0.0.1;User=root;Password=porfavorentrar"))
-            {
-                try
-                {
-                    await db_conn.OpenAsync();
-                    var command = new MySqlCommand(null, db_conn);
-                    command.CommandText =
-                        $@"insert into proyecto.usuario
-                        values ('{txtCrearUsuario.Text}', {roles[cbxCrearRol.SelectedItem.ToString()]}, '{MyEncryption.EncryptToString(txtCrearContraseña.Text)}', '{txtCrearNombre.Text}', '{txtCrearApellido.Text}')";
-                    await command.ExecuteNonQueryAsync();
-                    UpdateTable();
-                    MessageBox.Show("Usuario creado con éxito");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al crear usuario");
-                }
-                finally
-                {
-                    await db_conn.CloseAsync();
-                }
-            }
-        }
-
-        private void lblCrearUsuario_Click(object sender, EventArgs e)
-        {
-            pnlCrearUsuario_Click(sender, e);
-        }
-
-        private async void pnlAplicar_Click(object sender, EventArgs e)
-        {
-            using (var db_conn = new MySqlConnection("Host=127.0.0.1;User=root;Password=porfavorentrar"))
-            {
-                try
-                {
-                    await db_conn.OpenAsync();
-                    var command = new MySqlCommand(null, db_conn);
-                    string format;
-                    switch(cbxAtributo.SelectedItem.ToString())
-                    {
-                        case "rol":
-                            format = roles[txtActualizacion.Text].ToString();
-                            break;
-                        case "contraseña":
-                            format = $"'{MyEncryption.EncryptToString(txtActualizacion.Text)}'";
-                            break;
-                        default:
-                            format = $"'{txtActualizacion.Text}'";
-                            break;
-                    }
-                    command.CommandText = $"update proyecto.usuario set {atributosUsuario[cbxAtributo.SelectedItem.ToString()]}={format} where usuario='{cbxModificarUsuario.SelectedItem.ToString()}'";
-                    await command.ExecuteNonQueryAsync();
-                    UpdateTable();
-                    MessageBox.Show("Usuario actualizado con éxito");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al actualizar usuario");
-                } 
-                finally
-                {
-                    await db_conn.CloseAsync();
-                }
-            }
-        }
-
-        private void lblAplicar_Click(object sender, EventArgs e)
-        {
-            pnlAplicar_Click(sender, e);
-        }
-
-        private async void cbxModificarUsuario_DropDown(object sender, EventArgs e)
-        {
-            using (var db_conn = new MySqlConnection("Host=127.0.0.1;User=root;Password=porfavorentrar"))
-            {
-                try
-                {
-                    await db_conn.OpenAsync();
-                    var command = new MySqlCommand(null, db_conn);
-                    command.CommandText = $@"select usuario from proyecto.usuario";
-                    var reader = await command.ExecuteReaderAsync();
-                    cbxModificarUsuario.Items.Clear();
-                    while (reader.Read())
-                    {
-                        cbxModificarUsuario.Items.Add(reader.GetValue(0));
-                    }
-                }
-                catch (Exception ex)
-                {
-
-                }
-                finally
-                {
-                    await db_conn.CloseAsync();
-                }
-            }
-        }
-
-
-        private async void pnlEliminar_Click(object sender, EventArgs e)
-        {
-            using (var db_conn = new MySqlConnection("Host=127.0.0.1;User=root;Password=porfavorentrar"))
-            {
-                try
-                {
-                    await db_conn.OpenAsync();
-                    var command = new MySqlCommand(null, db_conn);
-                    if (cbxEliminarUsuario.SelectedItem.ToString() != txtConfirmar.Text)
-                    {
-                        MessageBox.Show("Error de confirmación");
-                        return;
-                    }
-                    command.CommandText = $@"delete from proyecto.usuario where usuario='{cbxEliminarUsuario.SelectedItem.ToString()}'";
-                    await command.ExecuteNonQueryAsync();
-                    UpdateTable();
-                    MessageBox.Show("Usuario eliminado con éxito");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al borrar el usuario. Causa probable: el usuario tiene elementos asociados" + ex.ToString());
-                }
-                finally
-                {
-                    await db_conn.CloseAsync();
-                }
-            }
-        }
-
-        private void lblEliminar_Click(object sender, EventArgs e)
-        {
-            pnlEliminar_Click(sender, e);
-        }
-
-        private async void cbxEliminarUsuario_DropDown(object sender, EventArgs e)
-        {
-            using (var db_conn = new MySqlConnection("Host=127.0.0.1;User=root;Password=porfavorentrar"))
-            {
-                try
-                {
-                    await db_conn.OpenAsync();
-                    var command = new MySqlCommand(null, db_conn);
-                    command.CommandText = $@"select usuario from proyecto.usuario";
-                    var reader = await command.ExecuteReaderAsync();
-                    cbxEliminarUsuario.Items.Clear();
-                    while (reader.Read())
-                    {
-                        cbxEliminarUsuario.Items.Add(reader.GetValue(0));
-                    }
-                }
-                catch (Exception ex)
-                {
-
-                }
-                finally
-                {
-                    await db_conn.CloseAsync();
-                }
-            }
         }
 
         private async void UpdateTable()
         {
-            using (var db_conn = new MySqlConnection("Host=127.0.0.1;User=root;Password=porfavorentrar"))
+            try
             {
-                try
+                using (var client = new HttpClient())
                 {
-                    await db_conn.OpenAsync();
-                    var command = new MySqlCommand(null, db_conn);
-                    command.CommandText = $@"select usuario.usuario, rol.nombre, usuario.nombre, usuario.apellido
-                                             from proyecto.usuario
-                                                inner join proyecto.rol on usuario.idrol=rol.idrol";
-                    tblUsuarios.Rows.Clear();
-                    var reader = await command.ExecuteReaderAsync();
-                    while (reader.Read())
+                    var bodyContent = new
                     {
-                        tblUsuarios.Rows.Add(new string[] {reader.GetString(0), reader.GetString(1), reader.GetString(2), reader.GetString(3)});
+                        User = username,
+                        Password = password,
+                        Token = Program.Token
+                    };
+                    var body = JsonConvert.SerializeObject(bodyContent);
+                    var content = new StringContent(body, Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync("http://localhost:5173/packages", content);
+                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al obtener paquete: el servidor no responde correctamente");
+                    var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
+                    if (responseBody.success == false) throw new Exception($"Error al obtener paquete: {responseBody.message} {responseBody.exception}");
+                    tblPaquetes.Rows.Clear();
+                    foreach (var item in responseBody.packages)
+                    {
+                        string characteristics = "";
+                        for (int i = 0; i < item.characteristics.Count; i++)
+                            characteristics += item.characteristics[i] + (i != item.characteristics.Count - 1 ? "," : "");
+                        tblPaquetes.Rows.Add(item.id, item.comments, characteristics, item.weight_Kg, item.volume_m3, item.user, item.physicalState);
                     }
                 }
-                catch (Exception ex)
-                {
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
 
-                }
-                finally
+        private async void txtID_TextChanged(object sender, EventArgs e)
+        {
+            if (txtID.Text == "")
+            {
+                UpdateTable();
+                return;
+            }
+            try
+            {
+                using (var client = new HttpClient())
                 {
-                    await db_conn.CloseAsync();
+                    var bodyContent = new
+                    {
+                        Credentials = new
+                        {
+                            User = username,
+                            Password = password,
+                            Token = Program.Token
+                        },
+                        Element = int.Parse(txtID.Text)
+                    };
+                    var body = JsonConvert.SerializeObject(bodyContent);
+                    var content = new StringContent(body, Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync("http://localhost:5173/getpackage", content);
+                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al obtener paquete: el servidor no responde correctamente");
+                    var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
+                    if (responseBody.success == false) throw new Exception($"Error al obtener paquete: {responseBody.message} {responseBody.exception}");
+                    tblPaquetes.Rows.Clear();
+                    string characteristics = "";
+                    for (int i = 0; i < responseBody.package.characteristics.Count; i++)
+                        characteristics += responseBody.package.characteristics[i].ToString() + (i != responseBody.package.characteristics.Count - 1 ? "," : "");
+                    tblPaquetes.Rows.Add(responseBody.package.id, responseBody.package.comments, characteristics, responseBody.package.weight_Kg, responseBody.package.volume_m3, responseBody.package.user, responseBody.package.physicalState);
+                    
                 }
+            }
+            catch (Exception ex)
+            {
+                tblPaquetes.Rows.Clear();
             }
         }
 
