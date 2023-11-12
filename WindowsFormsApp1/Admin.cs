@@ -28,7 +28,7 @@ namespace WindowsFormsApp1
             this.password = password;
             paquetes = new Paquetes(username, password);
             lotes = new Lotes(username, password);
-            cargar = new Cargar();
+            cargar = new Cargar(username, password);
             enviar = new Enviar();
             UpdateButtons((Panel)SidePanel.Controls["pnlPaquetes"]);
         }
