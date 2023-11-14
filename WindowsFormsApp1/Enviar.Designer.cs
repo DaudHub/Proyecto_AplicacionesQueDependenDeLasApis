@@ -191,6 +191,7 @@
             this.Controls.Add(this.label1);
             this.Name = "Enviar";
             this.Size = new System.Drawing.Size(612, 415);
+            this.Load += new System.EventHandler(this.Enviar_Load);
             this.pnlCargar.ResumeLayout(false);
             this.pnlCargar.PerformLayout();
             this.ResumeLayout(false);
