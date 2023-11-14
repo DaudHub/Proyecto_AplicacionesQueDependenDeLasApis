@@ -29,7 +29,7 @@ namespace WindowsFormsApp1
             paquetes = new Paquetes(username, password);
             lotes = new Lotes(username, password);
             cargar = new Cargar(username, password);
-            enviar = new Enviar();
+            enviar = new Enviar(username, password);
             UpdateButtons((Panel)SidePanel.Controls["pnlPaquetes"]);
         }
 
@@ -65,7 +65,6 @@ namespace WindowsFormsApp1
                     var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
                     if (responseBody.success == false) throw new Exception($"Error al obtener token: {responseBody.message}");
                     else Program.Token = responseBody.token;
-                    MessageBox.Show(Program.Token);
                     return true;
                 }
             }
