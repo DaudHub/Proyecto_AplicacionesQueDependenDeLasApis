@@ -153,11 +153,15 @@
             this.cbxDia.Name = "cbxDia";
             this.cbxDia.Size = new System.Drawing.Size(59, 21);
             this.cbxDia.TabIndex = 53;
+            this.cbxDia.DropDown += new System.EventHandler(this.cbxDia_DropDown);
             // 
             // cbxEstado
             // 
             this.cbxEstado.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxEstado.FormattingEnabled = true;
+            this.cbxEstado.Items.AddRange(new object[] {
+            "en depósito",
+            "en transito"});
             this.cbxEstado.Location = new System.Drawing.Point(311, 252);
             this.cbxEstado.Name = "cbxEstado";
             this.cbxEstado.Size = new System.Drawing.Size(84, 21);
@@ -191,7 +195,6 @@
             this.Controls.Add(this.label1);
             this.Name = "Enviar";
             this.Size = new System.Drawing.Size(612, 415);
-            this.Load += new System.EventHandler(this.Enviar_Load);
             this.pnlCargar.ResumeLayout(false);
             this.pnlCargar.PerformLayout();
             this.ResumeLayout(false);

@@ -24,8 +24,26 @@ namespace WindowsFormsApp1
         public Enviar(string username, string password)
         {
             InitializeComponent();
+            Initialize();
             this.username = username;
             this.password = password;
+        }
+
+        private async void Initialize()
+        {
+            for (int i = int.Parse(DateTime.Now.ToString("yyyy")); i <= int.Parse(DateTime.Now.ToString("yyyy")) + 5; i++)
+                cbxAnio.Items.Add(i);
+            for (int i = 1; i <= 12; i++)
+                cbxMes.Items.Add(i);
+            cbxAnio.SelectedItem = cbxAnio.Items[0];
+            cbxMes.SelectedItem = cbxMes.Items[0];
+        }
+
+        private void cbxDia_DropDown(object sender, EventArgs e)
+        {
+            cbxDia.Items.Clear();
+            for (int i = 1; i <= DateTime.DaysInMonth(int.Parse(DateTime.Now.ToString("yyyy")), (int) cbxMes.SelectedItem); i++)
+                cbxDia.Items.Add(i);
         }
 
         private async void pnlEnviar_Click(object sender, EventArgs e)
@@ -37,8 +55,7 @@ namespace WindowsFormsApp1
                     var dictionary = new Dictionary<string, int>()
                     {
                         {"en depósito", 1},
-                        {"en transito", 2},
-                        {"llegado", 3}
+                        {"en transito", 2}
                     };
                     var bodyContent = new
                     {
@@ -56,15 +73,13 @@ namespace WindowsFormsApp1
                             StateID = dictionary[cbxEstado.SelectedItem.ToString()]
                         }
                     };
-                    MessageBox.Show(bodyContent.ToString());
                     var body = JsonConvert.SerializeObject(bodyContent);
                     var content = new StringContent(body, Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync("http://localhost:5173/loadbundle", content);
-                    MessageBox.Show(response.ToString());
-                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al cargar lote: el servidor no responde correctamente");
+                    var response = await client.PostAsync("http://localhost:5173/sendbundle", content);
+                    if (((int)response.StatusCode).ToString()[0] != '2') throw new Exception("Error al enviar lote: el servidor no responde correctamente");
                     var responseBody = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
-                    if (responseBody.success == false) throw new Exception($"Error al cargar lote: {responseBody.message} {responseBody.exception}");
-                    MessageBox.Show("lote cargado con éxito");
+                    if (responseBody.success == false) throw new Exception($"Error al enviar lote: {responseBody.message} {responseBody.exception}");
+                    MessageBox.Show("lote enviado con éxito");
                 }
             }
             catch (Exception ex)
